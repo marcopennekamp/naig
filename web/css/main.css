@@ -1,0 +1,13 @@
+
+
+
+
+
+#notifications span {
+    display: block;
+    width: 100px;
+}
+
+.resident-box {
+    border: 1px solid black;
+}

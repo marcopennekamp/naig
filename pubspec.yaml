@@ -1,0 +1,6 @@
+name: naig
+dependencies:
+  browser: any
+transformers:
+- $dart2js:
+    commandLineOptions: [--enable-enum, --minify]

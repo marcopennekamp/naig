@@ -1,0 +1,12 @@
+# IntelliJ Idea
+*.idea/
+*.iml
+*.ipr
+*.iws
+
+# Project
+/build/
+/packages/
+
+# Pub
+*.lock
