@@ -6,6 +6,7 @@ import 'package:naig/Game.dart';
 import 'package:naig/Time.dart';
 import 'package:naig/resource.dart';
 import 'package:naig/render.dart';
+import 'package:naig/util.dart';
 
 part 'resident/Job.dart';
 part 'resident/JobSelect.dart';

@@ -1,6 +1,7 @@
 part of naig.resource;
 
-class ResourceManager {
+class ResourceManager implements Savable {
+
     Map<String, Resource> _resources = new Map ();
 
     Resource get (String name) {
@@ -18,11 +19,7 @@ class ResourceManager {
 
 
     Object toEncodable () {
-        List list = new List ();
-        for (Resource res in _resources.values) {
-            list.add (res.toEncodable ());
-        }
-        return list;
+        return _resources.values.toList ();
     }
 
     static ResourceManager fromEncodable (Object encodable) {

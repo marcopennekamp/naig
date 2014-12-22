@@ -6,7 +6,7 @@ class ResourceType {
     ResourceType (this.name, this.category);
 }
 
-class Resource implements Renderable {
+class Resource implements Renderable, Savable {
     final ResourceType _type;
     int amount;
 
@@ -50,9 +50,9 @@ class Resource implements Renderable {
 
     static Resource fromEncodable (Object encodable) {
         // TODO: Check that encodable is a Map.
-        Map data = encodable;
-        Resource resource = new Resource (ResourceTypes.nameToType[data['type']]);
-        resource.amount = data['amount'];
+        Map map = encodable;
+        Resource resource = new Resource (ResourceTypes.nameToType[map['type']]);
+        resource.amount = map['amount'];
         return resource;
     }
 

@@ -4,6 +4,7 @@ import 'dart:html';
 import 'dart:math' show Random;
 import 'dart:convert' show JSON;
 
+import 'package:naig/util.dart';
 import 'package:naig/resident.dart';
 import 'package:naig/resource.dart';
 import 'package:naig/Time.dart';
@@ -23,6 +24,8 @@ class Game {
     bool _inTick = false;
 
     void init () {
+        // deleteSave ();
+
         bool loadedSave = load ();
         if (!loadedSave) {
             resourceManager = new ResourceManager ();
@@ -30,9 +33,13 @@ class Game {
 
         querySelector ('#tick').addEventListener ('click', tickButtonClicked);
 
-        residents.add (new Resident ());
+        if (residents.length < 4) {
+            residents.add (new Resident.generated ());
+        }
 
         render ();
+
+        save ();
     }
 
     void tickButtonClicked (Event e) {
@@ -71,6 +78,10 @@ class Game {
         resourceManager.render ();
     }
 
+    void deleteSave () {
+        window.localStorage.remove ('naig-save');
+    }
+
     void save () {
         String json = toJson ();
         window.localStorage['naig-save'] = json;
@@ -100,12 +111,21 @@ class Game {
     }
 
     String toJson () {
-        return JSON.encode ({'resourceManager': resourceManager.toEncodable ()});
+        return JSON.encode ({
+            'resourceManager': resourceManager,
+            'residents': residents,
+
+            'residentNextId': Resident.nextId
+        }, toEncodable: Savable.callback_toEncodable);
     }
 
     void fromJson (String json) {
         Map map = JSON.decode (json);
         resourceManager = ResourceManager.fromEncodable (map['resourceManager']);
+        Resident.nextId = map['residentNextId'];
+        for (Map residentMap in map['residents']) {
+            residents.add (Resident.fromEncodable (residentMap));
+        }
     }
 
 }

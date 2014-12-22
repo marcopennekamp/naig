@@ -1,6 +1,8 @@
 library naig.time;
 
-class Date {
+import 'package:naig/util.dart';
+
+class Date implements Savable {
     static final int kWeeksPerYear = 52;
 
     int year;
@@ -17,5 +19,14 @@ class Date {
     }
 
     String notification () => 'Week $week of $year';
+
+    Object toEncodable () {
+        return {'year': year, 'week': week};
+    }
+
+    static Date fromEncodable (Object object) {
+        Map map = object;
+        return new Date (map['year'], map['week']);
+    }
 
 }

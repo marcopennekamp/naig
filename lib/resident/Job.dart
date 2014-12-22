@@ -1,6 +1,18 @@
 part of naig.resident;
 
-abstract class Job {
+abstract class Job implements Savable {
+
+    static Map<String, Function> _jobConstructorMap = null;
+
+    static get jobConstructorMap {
+        if (_jobConstructorMap == null) {
+            _jobConstructorMap = new Map ();
+            _jobConstructorMap[JobUnemployed.uniqueId] = (Resident resident) => new JobUnemployed (resident);
+            _jobConstructorMap[JobLogger.uniqueId] = (Resident resident) => new JobLogger (resident);
+        }
+        return _jobConstructorMap;
+    }
+
     Resident _resident;
     int _cooldown;
 
@@ -25,6 +37,24 @@ abstract class Job {
      */
     int maxCooldown ();
     String name ();
+
+
+    Object toEncodable () {
+        return {'name': name (), 'cooldown': _cooldown};
+    }
+
+    static Job fromEncodable (Resident owner, Object object) {
+        Map map = object;
+        Job job = jobConstructorMap[map['name']] (owner);
+        job._cooldown = map['cooldown'];
+        job._loadFromMap (map);
+        return job;
+    }
+
+    void _loadFromMap (Map map) {
+        /* May be overridden. */
+    }
+
 }
 
 class JobUnemployed extends Job {

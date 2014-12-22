@@ -1,7 +1,10 @@
 part of naig.resident;
 
-class Resident implements Renderable {
+class Resident implements Renderable, Savable {
 
+    /**
+     * Saved by naig.Game.
+     */
     static int nextId = 0;
 
     int id;
@@ -25,7 +28,9 @@ class Resident implements Renderable {
     /* Render stuff. */
     JobSelect _jobSelect;
 
-    Resident () {
+    Resident ();
+
+    Resident.generated () {
         id = nextId;
         nextId += 1;
         _generateSex ();
@@ -35,6 +40,10 @@ class Resident implements Renderable {
         _generateAttributes ();
         _generateBirthday ();
 
+        initTemporaryFields ();
+    }
+
+    void initTemporaryFields () {
         _jobSelect = new JobSelect (this);
     }
 
@@ -130,5 +139,36 @@ class Resident implements Renderable {
     bool isDirty () => true;
 
     String uniqueId () => 'resident-$id';
+
+
+    Object toEncodable () {
+        return {
+            'id': id,
+            'name': name,
+            'sex': sex,
+            'level': level,
+            'job': job,
+            'stamina': stamina,
+            'strength': strength,
+            'intellect': intellect,
+            'birthday': birthday,
+        };
+    }
+
+    static Resident fromEncodable (Object object) {
+        Map map = object;
+        Resident resident = new Resident ();
+        resident.id = map['id'];
+        resident.name = map['name'];
+        resident.sex = Sex.fromEncodable(map['sex']);
+        resident.level = map['level'];
+        resident.job = Job.fromEncodable (resident, map['job']);
+        resident.stamina = map['stamina'];
+        resident.strength = map['strength'];
+        resident.intellect = map['intellect'];
+        resident.birthday = Date.fromEncodable (map['birthday']);
+        resident.initTemporaryFields ();
+        return resident;
+    }
 
 }
